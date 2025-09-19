@@ -12,17 +12,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Setup Flutter 2.10.5
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '2.10.5'
           cache: true
 
       - name: Flutter doctor
         run: flutter doctor -v
 
-      - name: Ensure android/ scaffolding
-        run: flutter create .
+      - name: Remove Windows local.properties (CI will regenerate)
+        run: rm -f android/local.properties
+
+      - name: Generate missing Android scaffolding
+        run: flutter create --platforms=android .
 
       - name: Fetch dependencies
         run: flutter pub get
