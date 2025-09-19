@@ -725,7 +725,7 @@
       "name": "flutter_alarm_app",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     }
   ],
   "generator": "pub",
