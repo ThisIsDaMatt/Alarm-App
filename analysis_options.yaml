@@ -1,0 +1,21 @@
+# analysis_options.yaml
+
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - avoid_print
+    - prefer_const_constructors
+    - prefer_final_fields
+    - unnecessary_new
+    - always_specify_types
+    - prefer_single_quotes
+    - lines_longer_than_80_chars: false
+    - public_member_api_docs: false
+    - type_annotate_public_apis: true
+    - unnecessary_this
+    - prefer_is_empty
+    - prefer_contains
+    - avoid_types_on_closure_parameters
+    - prefer_adjacent_string_concatenation
+    - use_key_in_widget_constructors
