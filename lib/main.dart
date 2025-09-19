@@ -296,7 +296,6 @@ class _AlarmEditorState extends State<AlarmEditor> {
             // Expose a duplicate key purely for testing convenience
             // ignore: unused_local_variable
             SizedBox.shrink(key: const Key('labelField')),
-            ),
             const SizedBox(height: 8),
             _DaysSelector(
               initial: _repeatDays,
@@ -505,8 +504,8 @@ class _AlarmCard extends StatelessWidget {
     for (int i = 0; i < 7; i++) {
       if ((mask & (1 << i)) != 0) selected.add(labels[i]);
     }
-    if (selected.length == 7) return 'Every day';
-    if (selected.length == 2 && selected.containsAll(['Sat', 'Sun'])) return 'Weekends';
+  if (selected.length == 7) return 'Every day';
+  if (selected.length == 2 && selected.contains('Sat') && selected.contains('Sun')) return 'Weekends';
     if (selected.length == 5 && !selected.contains('Sat') && !selected.contains('Sun')) return 'Weekdays';
     return selected.join(', ');
   }

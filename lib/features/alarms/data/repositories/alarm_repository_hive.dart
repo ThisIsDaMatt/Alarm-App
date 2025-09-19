@@ -6,7 +6,7 @@ class AlarmRepositoryHive {
 
   Future<void> init() async {
     if (!Hive.isAdapterRegistered(101)) {
-      Hive.registerAdapter(AlarmAdapter(), 101);
+      Hive.registerAdapter(AlarmAdapter());
     }
     await Hive.openBox<Alarm>(boxName);
   }

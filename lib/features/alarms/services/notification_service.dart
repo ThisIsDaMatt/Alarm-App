@@ -22,16 +22,25 @@ class NotificationService {
     } catch (_) {}
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const darwinInit = DarwinInitializationSettings(
+  final darwinInit = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
       notificationCategories: <DarwinNotificationCategory>[
-        DarwinNotificationCategory(
+        const DarwinNotificationCategory(
           'ALARM_CATEGORY',
           actions: <DarwinNotificationAction>[
-            DarwinNotificationAction.plain('SNOOZE_ACTION', 'Snooze'),
-            DarwinNotificationAction.destructive('STOP_ACTION', 'Stop'),
+            DarwinNotificationAction(
+              'SNOOZE_ACTION',
+              'Snooze',
+            ),
+            DarwinNotificationAction(
+              'STOP_ACTION',
+              'Stop',
+              options: <DarwinNotificationActionOption>{
+                DarwinNotificationActionOption.destructive,
+              },
+            ),
           ],
           options: <DarwinNotificationCategoryOption>{
             DarwinNotificationCategoryOption.customDismissAction,
@@ -40,7 +49,7 @@ class NotificationService {
       ],
     );
 
-    const initSettings = InitializationSettings(android: androidInit, iOS: darwinInit);
+  final initSettings = InitializationSettings(android: androidInit, iOS: darwinInit);
 
     await _plugin.initialize(
       initSettings,
@@ -92,9 +101,9 @@ class NotificationService {
         ?.createNotificationChannel(androidChannel);
 
     // iOS permissions (Android handled via manifest and runtime)
-    await _plugin
-        .resolvePlatformSpecificImplementation<DarwinFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(alert: true, sound: true, badge: true);
+  await _plugin
+    .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+    ?.requestPermissions(alert: true, sound: true, badge: true);
   }
 
   Future<void> scheduleFullScreenAlarm({
@@ -130,7 +139,7 @@ class NotificationService {
       body,
       tz.TZDateTime.from(time, tz.local),
       NotificationDetails(android: androidDetails, iOS: iosDetails),
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.alarmClock,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload ?? id,
     );
