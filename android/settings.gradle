@@ -1,4 +1,18 @@
 pluginManagement {
+    def flutterSdkPath = System.getenv("FLUTTER_HOME")
+    def properties = new Properties()
+    def localPropertiesFile = new File(rootDir, 'local.properties')
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.withReader('UTF-8') { reader -> properties.load(reader) }
+        def sdk = properties.getProperty('flutter.sdk')
+        if (sdk != null) {
+            flutterSdkPath = sdk
+        }
+    }
+    if (flutterSdkPath == null) {
+        throw new RuntimeException('Flutter SDK not found. Define location with flutter.sdk in local.properties or FLUTTER_HOME env var.')
+    }
+    includeBuild("${flutterSdkPath}/packages/flutter_tools/gradle")
     repositories {
         google()
         mavenCentral()
@@ -8,6 +22,8 @@ pluginManagement {
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    id "com.android.application" version "8.3.2" apply false
+    id "org.jetbrains.kotlin.android" version "1.9.24" apply false
 }
 
 include ":app"
