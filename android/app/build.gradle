@@ -22,10 +22,12 @@ android {
             // Keep code shrinking off for now to avoid requiring shrinkResources.
             // If you enable shrinkResources, also enable minifyEnabled true.
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            shrinkResources false
         }
     }
 
