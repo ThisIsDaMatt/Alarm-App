@@ -1,4 +1,2 @@
-plugins {
-    // Flutter’s Gradle plugin; other plugins are applied in module build.gradle files
-    id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
-}
+// Root Gradle file intentionally minimal.
+// Flutter plugin resolution is handled in settings.gradle via dev.flutter.flutter-plugin-loader.
