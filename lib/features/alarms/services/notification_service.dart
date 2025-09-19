@@ -22,34 +22,8 @@ class NotificationService {
     } catch (_) {}
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-  final darwinInit = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-      notificationCategories: <DarwinNotificationCategory>[
-        const DarwinNotificationCategory(
-          'ALARM_CATEGORY',
-          actions: <DarwinNotificationAction>[
-            DarwinNotificationAction(
-              'SNOOZE_ACTION',
-              'Snooze',
-            ),
-            DarwinNotificationAction(
-              'STOP_ACTION',
-              'Stop',
-              options: <DarwinNotificationActionOption>{
-                DarwinNotificationActionOption.destructive,
-              },
-            ),
-          ],
-          options: <DarwinNotificationCategoryOption>{
-            DarwinNotificationCategoryOption.customDismissAction,
-          },
-        ),
-      ],
-    );
-
-  final initSettings = InitializationSettings(android: androidInit, iOS: darwinInit);
+    // Android-only init (we no longer configure iOS specifics)
+    final initSettings = InitializationSettings(android: androidInit);
 
     await _plugin.initialize(
       initSettings,
@@ -100,10 +74,7 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(androidChannel);
 
-    // iOS permissions (Android handled via manifest and runtime)
-  await _plugin
-    .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-    ?.requestPermissions(alert: true, sound: true, badge: true);
+  // No iOS permission requests; Android is handled via Manifest/runtime.
   }
 
   Future<void> scheduleFullScreenAlarm({
@@ -127,18 +98,12 @@ class NotificationService {
       ongoing: true,
       playSound: false,
     );
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentSound: false,
-      categoryIdentifier: 'ALARM_CATEGORY',
-    );
-
     await _plugin.zonedSchedule(
       notifId,
       title,
       body,
       tz.TZDateTime.from(time, tz.local),
-      NotificationDetails(android: androidDetails, iOS: iosDetails),
+      NotificationDetails(android: androidDetails),
       androidScheduleMode: AndroidScheduleMode.alarmClock,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload ?? id,
