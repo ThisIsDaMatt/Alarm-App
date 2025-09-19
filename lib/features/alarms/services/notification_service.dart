@@ -79,6 +79,18 @@ class NotificationService {
       },
     );
 
+    // Ensure Android notification channel exists with max importance
+    const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
+      'alarm_channel',
+      'Alarms',
+      description: 'Alarm notifications with full-screen intent',
+      importance: Importance.max,
+      playSound: false,
+    );
+    await _plugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidChannel);
+
     // iOS permissions (Android handled via manifest and runtime)
     await _plugin
         .resolvePlatformSpecificImplementation<DarwinFlutterLocalNotificationsPlugin>()

@@ -38,7 +38,7 @@ class _RingScreenState extends State<RingScreen> with SingleTickerProviderStateM
     try {
       final session = await AudioSession.instance;
       await session.configure(const AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+        avAudioSessionCategory: AVAudioSessionCategory.playback,
         avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
         avAudioSessionMode: AVAudioSessionMode.defaultMode,
         androidAudioAttributes: AndroidAudioAttributes(
@@ -113,24 +113,32 @@ class _RingScreenState extends State<RingScreen> with SingleTickerProviderStateM
                 child: Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          HapticFeedback.selectionClick();
-                          Navigator.of(context).pop('snooze');
-                        },
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 16), shape: const StadiumBorder()),
-                        child: const Text('Snooze'),
+                      child: Semantics(
+                        button: true,
+                        label: 'Snooze alarm',
+                        child: ElevatedButton(
+                          onPressed: () {
+                            HapticFeedback.selectionClick();
+                            Navigator.of(context).pop('snooze');
+                          },
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 16), shape: const StadiumBorder()),
+                          child: const Text('Snooze'),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          HapticFeedback.heavyImpact();
-                          Navigator.of(context).pop('stop');
-                        },
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 16), shape: const StadiumBorder()),
-                        child: const Text('Stop'),
+                      child: Semantics(
+                        button: true,
+                        label: 'Stop alarm',
+                        child: ElevatedButton(
+                          onPressed: () {
+                            HapticFeedback.heavyImpact();
+                            Navigator.of(context).pop('stop');
+                          },
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 16), shape: const StadiumBorder()),
+                          child: const Text('Stop'),
+                        ),
                       ),
                     ),
                   ],

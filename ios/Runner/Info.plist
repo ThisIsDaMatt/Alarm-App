@@ -30,9 +30,5 @@
         <string>audio</string>
         <string>fetch</string>
     </array>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app requires access to the microphone for alarm sounds.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to the photo library for selecting alarm sounds.</string>
 </dict>
 </plist>
