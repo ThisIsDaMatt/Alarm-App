@@ -1,5 +1,6 @@
 <resources>
-    <style name="LaunchTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Use a built-in Android theme to avoid requiring Material Components on the Android side -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 </resources>
