@@ -15,7 +15,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.flutter_alarm_app.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|direction|uiMode"
@@ -33,7 +33,7 @@
         </activity>
 
         <receiver
-            android:name=".BootReceiver"
+            android:name="com.example.flutter_alarm_app.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
