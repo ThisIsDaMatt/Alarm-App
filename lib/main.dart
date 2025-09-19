@@ -8,14 +8,13 @@ import 'features/alarms/data/repositories/alarm_repository_hive.dart';
 import 'features/alarms/domain/entities/alarm.dart';
 import 'features/settings/settings_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final notifications = NotificationService();
-  notifications.init();
-  Hive.initFlutter().then((_) async {
-    await AlarmRepositoryHive().init();
-    runApp(MyApp());
-  });
+  await notifications.init();
+  await Hive.initFlutter();
+  await AlarmRepositoryHive().init();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

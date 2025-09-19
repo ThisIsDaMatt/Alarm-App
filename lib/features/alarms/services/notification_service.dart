@@ -16,84 +16,74 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    // Time zones (safe to call more than once)
     try {
       tz.initializeTimeZones();
-    } catch (_) {
-      // ignore if already initialized
-    }
+    } catch (_) {}
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const darwinInit = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      notificationCategories: <DarwinNotificationCategory>[
+        DarwinNotificationCategory(
+          'ALARM_CATEGORY',
+          actions: <DarwinNotificationAction>[
+            DarwinNotificationAction.plain('SNOOZE_ACTION', 'Snooze'),
+            DarwinNotificationAction.destructive('STOP_ACTION', 'Stop'),
+          ],
+          options: <DarwinNotificationCategoryOption>{
+            DarwinNotificationCategoryOption.customDismissAction,
+          },
+        ),
+      ],
     );
+
     const initSettings = InitializationSettings(android: androidInit, iOS: darwinInit);
 
     await _plugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        navigatorKey.currentState
-            ?.pushNamed('/ring', arguments: response.payload)
-            .then((result) {
-          if (result is String) {
-      const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-      const darwinInit = DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        notificationCategories: [
-          DarwinNotificationCategory(
-            'ALARM_CATEGORY',
-            actions: <DarwinNotificationAction>[
-              DarwinNotificationAction.plain('SNOOZE_ACTION', 'Snooze'),
-              DarwinNotificationAction.destructive('STOP_ACTION', 'Stop'),
-            ],
-            options: <DarwinNotificationCategoryOption>{
-              DarwinNotificationCategoryOption.customDismissAction,
-            },
-          ),
-        ],
-      );
-                  controller.snooze(id);
-                } else if (result == 'stop') {
-                  controller.stop(id);
-                }
-        onDidReceiveNotificationResponse: (NotificationResponse response) {
-          final id = response.payload;
-          final actionId = response.actionId;
-          if (actionId == 'SNOOZE_ACTION' || actionId == 'STOP_ACTION') {
-            final ctx = navigatorKey.currentContext;
-            if (ctx != null && id != null && id.isNotEmpty) {
-              final controller = ctx.read<AlarmController>();
-              if (actionId == 'SNOOZE_ACTION') {
-                controller.snooze(id);
-              } else {
-                controller.stop(id);
-              }
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        final String? id = response.payload;
+        final String? actionId = response.actionId;
+
+        // Handle iOS/Android action buttons
+        if (actionId == 'SNOOZE_ACTION' || actionId == 'STOP_ACTION') {
+          final ctx = navigatorKey.currentContext;
+          if (ctx != null && id != null && id.isNotEmpty) {
+            final controller = ctx.read<AlarmController>();
+            if (actionId == 'SNOOZE_ACTION') {
+              await controller.snooze(id);
+            } else {
+              await controller.stop(id);
             }
-            return;
           }
-          navigatorKey.currentState?.pushNamed('/ring', arguments: id).then((result) {
-            if (result is String && id != null && id.isNotEmpty) {
-              final ctx = navigatorKey.currentContext;
-              if (ctx != null) {
-                final controller = ctx.read<AlarmController>();
-                if (result == 'snooze') {
-                  controller.snooze(id);
-                } else if (result == 'stop') {
-                  controller.stop(id);
-                }
+          return;
+        }
+
+        // Default: open ring UI and handle result
+        navigatorKey.currentState?.pushNamed('/ring', arguments: id).then((result) async {
+          if (result is String && id != null && id.isNotEmpty) {
+            final ctx = navigatorKey.currentContext;
+            if (ctx != null) {
+              final controller = ctx.read<AlarmController>();
+              if (result == 'snooze') {
+                await controller.snooze(id);
+              } else if (result == 'stop') {
+                await controller.stop(id);
               }
             }
-          });
-    final details = await _plugin.getNotificationAppLaunchDetails();
-    return details?.didNotificationLaunchApp ?? false;
+          }
+        });
+      },
+    );
+
+    // iOS permissions (Android handled via manifest and runtime)
+    await _plugin
+        .resolvePlatformSpecificImplementation<DarwinFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, sound: true, badge: true);
   }
-      // On iOS, explicitly request permissions for better UX
-      await _plugin
-          .resolvePlatformSpecificImplementation<DarwinFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(alert: true, sound: true, badge: true);
 
   Future<void> scheduleFullScreenAlarm({
     required String id,

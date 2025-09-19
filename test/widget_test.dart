@@ -10,8 +10,8 @@ void main() {
     // Verify that the app has a title
     expect(find.text('Alarm App'), findsOneWidget);
 
-    // Verify that the initial state has no alarms
-    expect(find.text('No alarms set'), findsOneWidget);
+    // Verify that the initial state has no alarms (updated copy)
+    expect(find.text('No alarms yet'), findsOneWidget);
   });
 
   testWidgets('Tapping the add alarm button opens the alarm editor', (WidgetTester tester) async {
@@ -21,7 +21,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
 
-    // Verify that the alarm editor page is displayed
+    // Verify that the alarm editor sheet is displayed (AppBar title 'Add Alarm')
     expect(find.text('Add Alarm'), findsOneWidget);
   });
 
@@ -32,11 +32,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
 
-    // Set a time for the alarm
+    // Open the time picker
     await tester.tap(find.byType(TimePicker));
     await tester.pumpAndSettle();
 
-    // Verify that the time picker is displayed
+    // We can't interact with native picker in unit test, just ensure widget still present
     expect(find.byType(TimePicker), findsOneWidget);
   });
 }

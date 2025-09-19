@@ -46,6 +46,10 @@ class AlarmRepositoryPrefs {
         'time': a.time.toIso8601String(),
         'isActive': a.isActive,
         'label': a.label,
+        'repeatDays': a.repeatDays,
+        'snoozeMinutes': a.snoozeMinutes,
+        'volume': a.volume,
+        'vibration': a.vibration,
       };
 
   Alarm _fromJson(Map<String, dynamic> m) {
@@ -54,6 +58,10 @@ class AlarmRepositoryPrefs {
       time: DateTime.parse(m['time'] as String),
       isActive: m['isActive'] as bool? ?? true,
       label: m['label'] as String?,
+      repeatDays: m['repeatDays'] as int? ?? 0,
+      snoozeMinutes: m['snoozeMinutes'] as int? ?? 10,
+      volume: (m['volume'] as num?)?.toDouble() ?? 1.0,
+      vibration: m['vibration'] as bool? ?? true,
     );
   }
 }
